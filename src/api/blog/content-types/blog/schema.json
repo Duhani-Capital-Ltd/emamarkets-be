@@ -4,8 +4,7 @@
   "info": {
     "singularName": "blog",
     "pluralName": "blogs",
-    "displayName": "Blog",
-    "description": ""
+    "displayName": "Blog"
   },
   "options": {
     "draftAndPublish": true
@@ -13,48 +12,19 @@
   "pluginOptions": {},
   "attributes": {
     "Title": {
-      "type": "string"
-    },
-    "Content": {
-      "type": "blocks"
+      "type": "string",
+      "required": true,
+      "unique": true
     },
     "Image": {
-      "type": "media",
-      "multiple": true,
-      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ]
-    },
-    "slug": {
-      "type": "string",
-      "unique": true,
-      "required": false
-    },
-    "users_permissions_user": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "plugin::users-permissions.user",
-      "inversedBy": "blogs"
-    },
-    "status": {
-      "type": "enumeration",
-      "enum": [
-        "draft",
-        "published",
-        "archived"
       ],
-      "required": true,
-      "default": "draft"
-    },
-    "kategori": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::kategori.kategori",
-      "inversedBy": "blogs"
+      "type": "media",
+      "multiple": true
     }
   }
 }

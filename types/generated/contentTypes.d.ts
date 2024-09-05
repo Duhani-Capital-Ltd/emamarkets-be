@@ -368,29 +368,13 @@ export interface ApiBlogBlog extends Schema.CollectionType {
     singularName: 'blog';
     pluralName: 'blogs';
     displayName: 'Blog';
-    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    Title: Attribute.String;
-    Content: Attribute.Blocks;
+    Title: Attribute.String & Attribute.Required & Attribute.Unique;
     Image: Attribute.Media<'images' | 'files' | 'videos' | 'audios', true>;
-    slug: Attribute.String & Attribute.Unique;
-    users_permissions_user: Attribute.Relation<
-      'api::blog.blog',
-      'manyToOne',
-      'plugin::users-permissions.user'
-    >;
-    status: Attribute.Enumeration<['draft', 'published', 'archived']> &
-      Attribute.Required &
-      Attribute.DefaultTo<'draft'>;
-    kategori: Attribute.Relation<
-      'api::blog.blog',
-      'manyToOne',
-      'api::kategori.kategori'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -401,46 +385,28 @@ export interface ApiBlogBlog extends Schema.CollectionType {
   };
 }
 
-export interface ApiKategoriKategori extends Schema.CollectionType {
-  collectionName: 'kategoris';
+export interface ApiLangLang extends Schema.CollectionType {
+  collectionName: 'langs';
   info: {
-    singularName: 'kategori';
-    pluralName: 'kategoris';
-    displayName: 'Kategori';
+    singularName: 'lang';
+    pluralName: 'langs';
+    displayName: 'lang';
     description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    name: Attribute.String &
-      Attribute.Required &
-      Attribute.SetMinMaxLength<{
-        maxLength: 100;
-      }>;
-    descriptions: Attribute.Text &
-      Attribute.SetMinMaxLength<{
-        maxLength: 400;
-      }>;
-    blogs: Attribute.Relation<
-      'api::kategori.kategori',
-      'oneToMany',
-      'api::blog.blog'
-    >;
+    key: Attribute.String & Attribute.Required;
+    desc: Attribute.String;
+    ind: Attribute.String;
+    eng: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::kategori.kategori',
-      'oneToOne',
-      'admin::user'
-    > &
+    createdBy: Attribute.Relation<'api::lang.lang', 'oneToOne', 'admin::user'> &
       Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::kategori.kategori',
-      'oneToOne',
-      'admin::user'
-    > &
+    updatedBy: Attribute.Relation<'api::lang.lang', 'oneToOne', 'admin::user'> &
       Attribute.Private;
   };
 }
@@ -893,11 +859,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
-    blogs: Attribute.Relation<
-      'plugin::users-permissions.user',
-      'oneToMany',
-      'api::blog.blog'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -926,7 +887,7 @@ declare module '@strapi/types' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'api::blog.blog': ApiBlogBlog;
-      'api::kategori.kategori': ApiKategoriKategori;
+      'api::lang.lang': ApiLangLang;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
