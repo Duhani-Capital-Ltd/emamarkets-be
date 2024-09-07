@@ -18,10 +18,11 @@ pipelines:
                 cp .env.staging .env
               fi
             - npm run build
-            # Install sshpass
+             # Install sshpass and check if it's installed
             - apt-get update
             - apt-get install -y sshpass
-            # Deploy to Production
+            - which sshpass  # Ensure sshpass is installed
+            # Rsync deployment
             - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/prod-be.emacenters.com/
             - sshpass -p 'gVYMv24s1Mj3Zaz' ssh -o StrictHostKeyChecking=no emacenters@92.205.161.185 'cd /home/emacenters/prod-be.emacenters.com && npm install && npm run develop'
 
@@ -41,9 +42,10 @@ pipelines:
               cp .env.staging .env
             fi
           - npm run build
-          # Install sshpass
+            # Install sshpass and check if it's installed
           - apt-get update
           - apt-get install -y sshpass
-          # Deploy to Staging
-          - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/staging-be.emacenters.com/
-          - sshpass -p 'gVYMv24s1Mj3Zaz' ssh -o StrictHostKeyChecking=no emacenters@92.205.161.185 'cd /home/emacenters/staging-be.emacenters.com && npm install && npm run develop'
+          - which sshpass  # Ensure sshpass is installed
+          # Rsync deployment
+          - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/prod-be.emacenters.com/
+          - sshpass -p 'gVYMv24s1Mj3Zaz' ssh -o StrictHostKeyChecking=no emacenters@92.205.161.185 'cd /home/emacenters/prod-be.emacenters.com && npm install && npm run develop'
