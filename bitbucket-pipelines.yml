@@ -23,7 +23,7 @@ pipelines:
             - apt-get install -y sshpass
             - which sshpass  # Ensure sshpass is installed
             # Rsync deployment
-            - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/prod-be.emacenters.com/
+            - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/prod-be.emacenters.com
             - sshpass -p 'gVYMv24s1Mj3Zaz' ssh -o StrictHostKeyChecking=no emacenters@92.205.161.185 'cd /home/emacenters/prod-be.emacenters.com && npm install && npm run develop'
 
   staging:
@@ -47,5 +47,5 @@ pipelines:
           - apt-get install -y sshpass
           - which sshpass  # Ensure sshpass is installed
           # Rsync deployment
-          - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/prod-be.emacenters.com/
+          - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/prod-be.emacenters.com
           - sshpass -p 'gVYMv24s1Mj3Zaz' ssh -o StrictHostKeyChecking=no emacenters@92.205.161.185 'cd /home/emacenters/prod-be.emacenters.com && npm install && npm run develop'
