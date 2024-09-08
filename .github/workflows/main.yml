@@ -39,9 +39,9 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/apps-be.ema-markets.com
-          sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/apps-be.ema-markets.com && npm install && npm run develop'
+          sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/apps-be.ema-markets.com && npm install && npm run build'
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
         run: |
           sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/staging-be.ema-markets.com
-              sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/staging-be.ema-markets.com && npm install && npm run develop'
+              sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/staging-be.ema-markets.com && npm install && npm run build'
