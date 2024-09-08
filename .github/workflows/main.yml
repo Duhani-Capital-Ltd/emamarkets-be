@@ -23,7 +23,6 @@ jobs:
         run: |
           npm cache clean --force
           npm install
-          npm install -g pm2
 
       - name: Copy Environment File
         run: |
@@ -36,10 +35,14 @@ jobs:
       - name: Build the Project
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            npm run build
+            NODE_ENV=production npm run build
           elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
-            npm run build
+            NODE_ENV=development npm run build
           fi
+
+      - name: Copy .htaccess to dist/build
+        run: |
+          cp .htaccess dist/build/.htaccess
 
       - name: Install sshpass and check installation
         run: |
