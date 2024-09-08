@@ -32,30 +32,16 @@ jobs:
             cp .env.staging .env
           fi
 
-      - name: Build the Project
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            NODE_ENV=production npm run build
-          elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
-            NODE_ENV=development npm run build
-          fi
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
 
-      - name: Copy .htaccess to dist/build
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
         run: |
-          cp .htaccess dist/build/.htaccess
-
-      - name: Install sshpass and check installation
+          sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/apps-be.ema-markets.com
+          sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/apps-be.ema-markets.com && npm install && npm run develop'
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/staging'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
-          which sshpass
-
-      - name: Deploy via Rsync to the Correct Environment
-        run: |
-          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/apps-be.ema-markets.com
-            sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/apps-be.ema-markets.com && npm install && npm run develop'
-          elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
-            sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/staging-be.ema-markets.com
-            sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/staging-be.ema-markets.com && npm install && npm run develop'
-          fi
+          sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/staging-be.ema-markets.com
+              sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/staging-be.ema-markets.com && npm install && npm run develop'
