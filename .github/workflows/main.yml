@@ -36,10 +36,8 @@ jobs:
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             NODE_ENV=production npm run build
-            npm run develop
           elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
             NODE_ENV=development npm run build
-            npm run develop
           fi
 
       - name: Install sshpass and check installation
