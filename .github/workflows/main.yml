@@ -1,0 +1,58 @@
+name: Deploy Strapi BE EMA Markets
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Clean npm cache and install dependencies
+        run: |
+          npm cache clean --force
+          npm install
+          npm install -g pm2
+
+      - name: Copy Environment File
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            cp .env.production .env
+          elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
+            cp .env.staging .env
+          fi
+
+      - name: Build the Project
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            npm run build
+          elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
+            npm run build
+          fi
+
+      - name: Install sshpass and check installation
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+          which sshpass
+
+      - name: Deploy via Rsync to the Correct Environment
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/apps.ema-markets.com
+            sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/apps.ema-markets.com && npm install && npm run develop'
+          elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
+            sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/staging-be.ema-markets.com
+            sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/staging-be.ema-markets.com && npm install && npm run develop'
+          fi

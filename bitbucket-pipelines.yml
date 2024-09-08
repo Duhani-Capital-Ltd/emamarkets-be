@@ -1,4 +1,4 @@
-image: node:14
+image: node:20
 
 pipelines:
   branches:
@@ -8,20 +8,44 @@ pipelines:
           caches:
             - node
           script:
+            - npm cache clean --force
+            - npm install ajv
             - npm install
+            - |
+              if [ "${BITBUCKET_BRANCH}" == "main" ]; then
+                cp .env.production .env
+              elif [ "${BITBUCKET_BRANCH}" == "staging" ]; then
+                cp .env.staging .env
+              fi
             - npm run build
-            - apt-get update && apt-get install -y sshpass
-            - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/prod-be.emacenters.com/
+             # Install sshpass and check if it's installed
+            - apt-get update
+            - apt-get install -y sshpass
+            - which sshpass  # Ensure sshpass is installed
+            # Rsync deployment
+            - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/prod-be.emacenters.com
             - sshpass -p 'gVYMv24s1Mj3Zaz' ssh -o StrictHostKeyChecking=no emacenters@92.205.161.185 'cd /home/emacenters/prod-be.emacenters.com && npm install && npm run develop'
 
-    staging:
-      - step:
-          name: Deploy to Staging
-          caches:
-            - node
-          script:
-            - npm install
-            - npm run build
-            - apt-get update && apt-get install -y sshpass
-            - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/staging-be.emacenters.com/
-            - sshpass -p 'gVYMv24s1Mj3Zaz' ssh -o StrictHostKeyChecking=no emacenters@92.205.161.185 'cd /home/emacenters/staging-be.emacenters.com && npm install && npm run develop'
+  staging:
+    - step:
+        name: Deploy to Staging
+        caches:
+          - node
+        script:
+          - npm cache clean --force
+          - npm install ajv
+          - npm install
+          - |
+            if [ "${BITBUCKET_BRANCH}" == "main" ]; then
+              cp .env.production .env
+            elif [ "${BITBUCKET_BRANCH}" == "staging" ]; then
+              cp .env.staging .env
+            fi
+          - npm run build
+            # Install sshpass and check if it's installed
+          - apt-get update
+          - apt-get install -y sshpass
+          - which sshpass  # Ensure sshpass is installed
+          # Rsync deployment
+          - sshpass -p 'gVYMv24s1Mj3Zaz' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emacenters@92.205.161.185:/home/emacenters/prod-be.emacenters.com
+          - sshpass -p 'gVYMv24s1Mj3Zaz' ssh -o StrictHostKeyChecking=no emacenters@92.205.161.185 'cd /home/emacenters/prod-be.emacenters.com && npm install && npm run develop'
