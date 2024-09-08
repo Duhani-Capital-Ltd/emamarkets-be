@@ -1,6 +1,14 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  RewriteCond %{HTTP_HOST} !^staging-be\.ema-markets\.com$ [NC]
-  RewriteRule ^(.*)$ https://staging-be.ema-markets.com/$1 [L,R=301]
+  # Arahkan semua trafik ke http://apps-be.ema-markets.com/
+  RewriteCond %{HTTP_HOST} !^apps-be\.ema-markets\.com$ [NC]
+  RewriteRule ^(.*)$ http://apps-be.ema-markets.com/$1 [L,R=301]
+
+  # Kondisi untuk memastikan Strapi API tetap berfungsi
+  RewriteCond %{REQUEST_URI} !^/admin
+  RewriteCond %{REQUEST_URI} !^/api
+
+  # Redirect apapun selain admin dan API ke halaman yang sesuai
+  RewriteRule ^(.*)$ http://apps-be.ema-markets.com/$1 [L,R=301]
 </IfModule>
