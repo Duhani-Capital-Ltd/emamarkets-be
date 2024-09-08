@@ -2,5 +2,5 @@
   RewriteEngine On
 
   RewriteCond %{HTTP_HOST} !^staging-be\.ema-markets\.com$ [NC]
-  RewriteRule ^(.*)$ http://staging-be.ema-markets.com/$1 [L,R=301]
+  RewriteRule ^(.*)$ https://staging-be.ema-markets.com/$1 [L,R=301]
 </IfModule>
