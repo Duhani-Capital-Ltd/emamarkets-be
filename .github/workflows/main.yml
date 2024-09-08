@@ -50,8 +50,8 @@ jobs:
       - name: Deploy via Rsync to the Correct Environment
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-            sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/apps.ema-markets.com
-            sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/apps.ema-markets.com && npm install && npm run develop'
+            sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/apps-be.ema-markets.com
+            sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/apps-be.ema-markets.com && npm install && npm run develop'
           elif [ "${{ github.ref }}" == "refs/heads/staging" ]; then
             sshpass -p 'LibrA21101998' rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ emamarkets@92.205.161.185:/home/emamarkets/staging-be.ema-markets.com
             sshpass -p 'LibrA21101998' ssh -o StrictHostKeyChecking=no emamarkets@92.205.161.185 'cd /home/emamarkets/staging-be.ema-markets.com && npm install && npm run develop'
